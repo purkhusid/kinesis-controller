@@ -9,6 +9,20 @@
 		return nil, err
 	}
 
+	// Populate the Spec fields that mirror observed AWS state. sdkFind always
+	// overwrites these so that the "latest" resource passed to delta detection
+	// reflects actual AWS state rather than whatever was last written to the CR.
+	if ko.Status.RetentionPeriodHours != nil {
+		retentionCopy := *ko.Status.RetentionPeriodHours
+		ko.Spec.DesiredRetentionPeriodHours = &retentionCopy
+	}
+	if ko.Status.EncryptionType != nil {
+		ko.Spec.DesiredEncryptionType = ko.Status.EncryptionType
+	}
+	if ko.Status.KeyID != nil {
+		ko.Spec.EncryptionKeyARN = ko.Status.KeyID
+	}
+
 	// Read the resource-based policy attached to the stream (if any) so that
 	// the delta comparison reflects the actual policy state.
 	if ko.Status.ACKResourceMetadata != nil && ko.Status.ACKResourceMetadata.ARN != nil {
