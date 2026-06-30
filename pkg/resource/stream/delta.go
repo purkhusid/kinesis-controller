@@ -66,6 +66,7 @@ func newResourceDelta(
 	compareShardLevelMetrics(delta, a, b)
 	compareWarmThroughput(delta, a, b)
 	compareMaxRecordSize(delta, a, b)
+	compareStreamModeDetails(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.DesiredEncryptionType, b.ko.Spec.DesiredEncryptionType) {
 		delta.Add("Spec.DesiredEncryptionType", a.ko.Spec.DesiredEncryptionType, b.ko.Spec.DesiredEncryptionType)
@@ -100,17 +101,6 @@ func newResourceDelta(
 	} else if a.ko.Spec.ShardCount != nil && b.ko.Spec.ShardCount != nil {
 		if *a.ko.Spec.ShardCount != *b.ko.Spec.ShardCount {
 			delta.Add("Spec.ShardCount", a.ko.Spec.ShardCount, b.ko.Spec.ShardCount)
-		}
-	}
-	if ackcompare.HasNilDifference(a.ko.Spec.StreamModeDetails, b.ko.Spec.StreamModeDetails) {
-		delta.Add("Spec.StreamModeDetails", a.ko.Spec.StreamModeDetails, b.ko.Spec.StreamModeDetails)
-	} else if a.ko.Spec.StreamModeDetails != nil && b.ko.Spec.StreamModeDetails != nil {
-		if ackcompare.HasNilDifference(a.ko.Spec.StreamModeDetails.StreamMode, b.ko.Spec.StreamModeDetails.StreamMode) {
-			delta.Add("Spec.StreamModeDetails.StreamMode", a.ko.Spec.StreamModeDetails.StreamMode, b.ko.Spec.StreamModeDetails.StreamMode)
-		} else if a.ko.Spec.StreamModeDetails.StreamMode != nil && b.ko.Spec.StreamModeDetails.StreamMode != nil {
-			if *a.ko.Spec.StreamModeDetails.StreamMode != *b.ko.Spec.StreamModeDetails.StreamMode {
-				delta.Add("Spec.StreamModeDetails.StreamMode", a.ko.Spec.StreamModeDetails.StreamMode, b.ko.Spec.StreamModeDetails.StreamMode)
-			}
 		}
 	}
 	desiredACKTags, _ := convertToOrderedACKTags(a.ko.Spec.Tags)

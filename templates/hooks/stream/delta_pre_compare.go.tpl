@@ -24,3 +24,4 @@
     compareShardLevelMetrics(delta, a, b)
     compareWarmThroughput(delta, a, b)
     compareMaxRecordSize(delta, a, b)
+    compareStreamModeDetails(delta, a, b)
