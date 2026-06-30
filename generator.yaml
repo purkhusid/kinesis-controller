@@ -44,11 +44,7 @@ resources:
       sdk_update_pre_build_request:
         template_path: hooks/stream/sdk_update_pre_build_request.go.tpl
       delta_pre_compare:
-        code: |
-          compareResourcePolicyDocument(delta, a, b)
-          compareShardLevelMetrics(delta, a, b)
-          compareWarmThroughput(delta, a, b)
-          compareMaxRecordSize(delta, a, b)
+        template_path: hooks/stream/delta_pre_compare.go.tpl
     exceptions:
       errors:
         404:
@@ -60,6 +56,27 @@ resources:
           path: Tags
       Name:
         is_primary_key: true
+      # Settable Spec inputs. None of these are part of CreateStream; they are
+      # applied via separate API calls in the update path (Increase/Decrease
+      # StreamRetentionPeriod and Start/StopStreamEncryption). sdkFind mirrors
+      # the observed AWS values back into these fields so that auto-generated
+      # delta detection compares desired vs actual state correctly.
+      DesiredRetentionPeriodHours:
+        type: int64
+        late_initialize:
+          skip_incomplete_check: {}
+      DesiredEncryptionType:
+        type: string
+        late_initialize:
+          skip_incomplete_check: {}
+      # EncryptionKeyARN is the customer-managed KMS key used when
+      # DesiredEncryptionType is KMS. A key *ARN* is required (aliases are
+      # rejected in the update hook) so the observed Status.KeyID matches the
+      # desired value and the controller does not re-encrypt on every reconcile.
+      EncryptionKeyARN:
+        type: string
+        late_initialize:
+          skip_incomplete_check: {}
       ResourcePolicy:
         from:
           operation: PutResourcePolicy

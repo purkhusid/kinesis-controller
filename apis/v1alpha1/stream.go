@@ -22,7 +22,9 @@ import (
 
 // StreamSpec defines the desired state of Stream.
 type StreamSpec struct {
-
+	DesiredEncryptionType       *string `json:"desiredEncryptionType,omitempty"`
+	DesiredRetentionPeriodHours *int64  `json:"desiredRetentionPeriodHours,omitempty"`
+	EncryptionKeyARN            *string `json:"encryptionKeyARN,omitempty"`
 	// If this parameter is unset (null) or if you set it to false, and the stream
 	// has registered consumers, the call to DeleteStream fails with a ResourceInUseException.
 	EnforceConsumerDeletion *bool `json:"enforceConsumerDeletion,omitempty"`

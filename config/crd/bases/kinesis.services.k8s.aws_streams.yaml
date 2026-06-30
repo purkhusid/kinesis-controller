@@ -39,6 +39,13 @@ spec:
           spec:
             description: StreamSpec defines the desired state of Stream.
             properties:
+              desiredEncryptionType:
+                type: string
+              desiredRetentionPeriodHours:
+                format: int64
+                type: integer
+              encryptionKeyARN:
+                type: string
               enforceConsumerDeletion:
                 description: |-
                   If this parameter is unset (null) or if you set it to false, and the stream
